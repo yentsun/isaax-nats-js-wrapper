@@ -1,5 +1,6 @@
 const NATS = require('nats')
 const logger = require('./lib/logger')
+const merge = require('lodash/merge')
 
 
 function Wrapper(options) {
@@ -7,10 +8,12 @@ function Wrapper(options) {
     if (!(this instanceof Wrapper)) {
         return new Wrapper(options)
     }
-
-    options = options ? options : {
+    
+    const defaults = {
         requestTimeout: 1000
     }
+
+    options = options ? merge(defaults, options) : defaults
 
     const nats = options.connection || NATS.connect(options.url)
     logger.info('connected to NATS:', nats.currentServer.url.host)
