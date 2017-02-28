@@ -33,6 +33,7 @@ function Wrapper(options) {
     this.request = function (subject, message, done) {
         logger.debug('performing request', subject, message)
         nats.requestOne(subject, JSON.stringify(message), null, options.requestTimeout, function (response) {
+            logger.debug(response)
             if (response.code && response.code === NATS.REQ_TIMEOUT) {
                 logger.error('response timeout')
                 return done(new Error('response timeout'))
