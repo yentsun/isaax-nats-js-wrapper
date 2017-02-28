@@ -9,7 +9,7 @@ function Wrapper(options) {
     }
 
     options = options ? options : {
-        requestTimeout: 10000
+        requestTimeout: 1000
     }
 
     const nats = options.connection || NATS.connect(options.url)
