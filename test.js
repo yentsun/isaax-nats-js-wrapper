@@ -2,8 +2,15 @@ const sinon = require('sinon')
 const assert = require('chai').assert
 const Wrapper = require('./')
 
-const connection = {requestOne: function () {}, currentServer:{url: {host: 'mock host'}}}
+const connection = {
+    subscribe: function () {},
+    publish: function () {},
+    requestOne: function () {},
+    currentServer:{url: {host: 'mock host'}}
+}
 const NATSrequestOne = sinon.stub(connection, 'requestOne')
+const NATSsubscribe = sinon.stub(connection, 'subscribe')
+const NATSpublish = sinon.stub(connection, 'publish')
 const wrapper = Wrapper({connection: connection})
 
 describe('request', function () {
@@ -33,6 +40,31 @@ describe('request', function () {
             assert.isNotOk(response)
             done()
         })
+    })
+
+})
+
+describe('subscribe', function () {
+
+    it('performs a subscription to a subject', function (done) {
+        NATSsubscribe.callsArgWith(2, JSON.stringify({data: {one: 'two'}}), null, 'test.event.happened')
+        wrapper.subscribe('test.event.happened', {}, function (message, replyTo, subject) {
+            assert.equal(message.data.one, 'two')
+            assert.isNull(replyTo)
+            assert.equal(subject, 'test.event.happened')
+            done()
+        })
+    })
+
+})
+
+describe('publish', function () {
+
+    it('performs publishing to a subject', function (done) {
+        NATSpublish.callsArgWith(2, null)
+        wrapper.publish('test.event.happened', {message: 'yay!'})
+        assert.isTrue(NATSpublish.called)
+        done()
     })
 
 })
