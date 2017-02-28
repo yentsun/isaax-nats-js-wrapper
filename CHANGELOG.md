@@ -1,3 +1,8 @@
+[0.1.2] - 2017-02-28
+--------------------
+- [x] ADDED default options fix #2
+
+
 [0.1.1] - 2017-02-28
 --------------------
 - [x] CHANGED initial response timeout to 1000
