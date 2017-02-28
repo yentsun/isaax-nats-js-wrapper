@@ -1,0 +1,3 @@
+- [x] ADDED `request` method #1
+- [ ] ADDED `publish` method #1
+- [ ] ADDED `subscribe` method #1
