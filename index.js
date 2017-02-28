@@ -19,12 +19,17 @@ function Wrapper(options) {
         logger.debug('performing request', subject, message);
         nats.requestOne(subject, JSON.stringify(message), null, options.requestTimeout, function (response) {
             if (response.code && response.code === NATS.REQ_TIMEOUT) {
+                logger.error('response timeout');
                 return done(new Error('response timeout'));
             }
             var res = JSON.parse(response)
             const error = res.error
-            delete response.error
-            if (error) return done(new Error(error.message))
+            delete res.error
+            if (error) {
+                logger.error('request ended in error:', error.message);
+                return done(new Error(error.message))
+            }
+            logger.debug('response received:', res);
             return done(null, res)
         })
     }
