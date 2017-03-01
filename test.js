@@ -33,6 +33,15 @@ describe('request', function () {
         })
     })
 
+    it('performs a request and returns error from error.detail', function (done) {
+        NATSrequestOne.callsArgWith(4, JSON.stringify({error: {detail: 'account service error'}}))
+        wrapper.request('account.get', {id: 'ACC001'}, function (error, response) {
+            assert.equal(error.message, 'account service error')
+            assert.isNotOk(response)
+            done()
+        })
+    })
+
     it('performs a request and returns timeout error', function (done) {
         NATSrequestOne.callsArgWith(4, {code: 'REQ_TIMEOUT'})
         wrapper.request('account.get', {id: 'ACC001'}, function (error, response) {
