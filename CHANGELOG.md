@@ -1,3 +1,8 @@
+[0.2.0]
+-------
+- [x] ADDED `error.detail` (pg) support
+
+
 [0.1.2] - 2017-02-28
 --------------------
 - [x] ADDED default options fix #2

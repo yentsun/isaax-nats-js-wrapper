@@ -45,8 +45,8 @@ function Wrapper(options) {
             const error = res.error
             delete res.error
             if (error) {
-                logger.error('request ended in error:', error.message)
-                return done(new Error(error.message))
+                logger.error('request ended in error:', error.message || error.detail)
+                return done(new Error(error.message || error.detail))
             }
             logger.debug('response received:', res)
             return done(null, res)
