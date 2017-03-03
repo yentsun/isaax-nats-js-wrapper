@@ -1,3 +1,8 @@
+[0.2.1] - 2017-03-03
+--------------------
+- [x] CHANGED default log level to `debug`
+
+
 [0.2.0] - 2017-03-01
 --------------------
 - [x] ADDED `error.detail` (pg) support
