@@ -34,7 +34,7 @@ function Wrapper(options) {
     }
 
     this.request = function (subject, message, done) {
-        logger.debug('performing request', subject, message)
+        logger.debug('>>>', subject, message)
         nats.requestOne(subject, JSON.stringify(message), null, options.requestTimeout, function (response) {
             logger.debug(response)
             if (response.code && response.code === NATS.REQ_TIMEOUT) {
@@ -48,7 +48,7 @@ function Wrapper(options) {
                 logger.error('request ended in error:', error.message || error.detail)
                 return done(new Error(error.message || error.detail))
             }
-            logger.debug('response received:', res)
+            logger.debug('<<<', res)
             return done(null, res)
         })
     }
