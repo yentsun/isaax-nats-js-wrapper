@@ -1,3 +1,8 @@
+[0.2.2] - 2017-04-08
+--------------------
+- [x] CHANGED request logging from verbs to arrows
+
+
 [0.2.1] - 2017-03-03
 --------------------
 - [x] CHANGED default log level to `debug`
