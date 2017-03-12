@@ -1,5 +1,5 @@
-[1.0.0]
--------
+[1.0.0] - 2017-04-12
+--------------------
 - [x] CHANGED request response to return unwrapped object fix #3
 
 
