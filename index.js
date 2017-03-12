@@ -1,6 +1,7 @@
 const NATS = require('nats')
 const logger = require('./lib/logger')
 const merge = require('lodash/merge')
+const keys = require('lodash/keys')
 
 
 function Wrapper(options) {
@@ -48,6 +49,11 @@ function Wrapper(options) {
                 logger.error('request ended in error:', error.message || error.detail)
                 return done(new Error(error.message || error.detail))
             }
+
+            // if response is wrapped in a single key - unwrap it
+            const keys_ = keys(res)
+            if (keys_.length == 1) res = res[keys_[0]]
+
             logger.debug('<<<', res)
             return done(null, res)
         })
