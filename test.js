@@ -15,11 +15,20 @@ const wrapper = Wrapper({connection: connection})
 
 describe('request', function () {
 
-    it('performs a request and returns successful result', function (done) {
+    it('performs a request and returns successful result unwrapped', function (done) {
         NATSrequestOne.callsArgWith(4, JSON.stringify({error: null, account: {id: 'ACC001'}}))
+        wrapper.request('account.get', {id: 'ACC001'}, function (error, account) {
+            assert.isNull(error)
+            assert.equal(account.id, 'ACC001')
+            done()
+        })
+    })
+
+    it('performs a request and returns single value if response has single key', function (done) {
+        NATSrequestOne.callsArgWith(4, JSON.stringify({error: null, id: 'ACC001'}))
         wrapper.request('account.get', {id: 'ACC001'}, function (error, response) {
             assert.isNull(error)
-            assert.equal(response.account.id, 'ACC001')
+            assert.equal(response, 'ACC001')
             done()
         })
     })

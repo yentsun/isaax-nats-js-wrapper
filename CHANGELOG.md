@@ -1,3 +1,8 @@
+[1.0.0]
+-------
+- [x] CHANGED request response to return unwrapped object fix #3
+
+
 [0.2.2] - 2017-04-08
 --------------------
 - [x] CHANGED request logging from verbs to arrows
