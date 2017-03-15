@@ -64,9 +64,23 @@ describe('request', function () {
 
 describe('subscribe', function () {
 
-    it('performs a subscription to a subject', function (done) {
+    it('performs a response-subscription to a subject', function (done) {
+        NATSsubscribe.callsArgWith(1, JSON.stringify({data: {one: 'two'}}), null, 'test.event.happened')
+        wrapper.subscribe('test.event.happened', function (message, replyTo, subject) {
+            assert.equal(message.data.one, 'two')
+            assert.isNull(replyTo)
+            assert.equal(subject, 'test.event.happened')
+            done()
+        })
+    })
+
+})
+
+describe('process', function () {
+
+    it('performs a process-subscription to a subject', function (done) {
         NATSsubscribe.callsArgWith(2, JSON.stringify({data: {one: 'two'}}), null, 'test.event.happened')
-        wrapper.subscribe('test.event.happened', {}, function (message, replyTo, subject) {
+        wrapper.process('test.event.happened', 'worker-group', function (message, replyTo, subject) {
             assert.equal(message.data.one, 'two')
             assert.isNull(replyTo)
             assert.equal(subject, 'test.event.happened')

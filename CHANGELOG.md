@@ -1,3 +1,7 @@
+- [x] ADDED `process` method to subscribe to a queue group #4
+- [x] REMOVE `options` argument from `subscribe` #4
+
+
 [1.0.0] - 2017-04-12
 --------------------
 - [x] CHANGED request response to return unwrapped object fix #3

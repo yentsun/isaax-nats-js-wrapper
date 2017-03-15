@@ -26,10 +26,18 @@ function Wrapper(options) {
         })
     }
 
-    this.subscribe = function (subject, opts, done) {
+    this.subscribe = function (subject, done) {
         logger.debug('subscribing to', subject)
-        nats.subscribe(subject, opts, function(message, reply, subject) {
-            logger.debug('received event via subscription', subject, message)
+        nats.subscribe(subject, function(message, reply, subject) {
+            logger.debug('responding to', subject, message)
+            done(JSON.parse(message), reply, subject)
+        })
+    }
+
+    this.process = function (subject, group, done) {
+        logger.debug('subscribing to:', subject, 'in group:', group)
+        nats.subscribe(subject, {queue: group}, function(message, reply, subject) {
+            logger.debug('processing', subject, message)
             done(JSON.parse(message), reply, subject)
         })
     }
