@@ -9,7 +9,7 @@ Installation
 ------------
 
 ```
-npm install xshellinc/isaax-nats-js-wrapper#v1.1.0 --save
+npm install ssh://github.com/xshellinc/isaax-nats-js-wrapper#v1.1.0 --save
 ```
 
 Usage
