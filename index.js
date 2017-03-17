@@ -30,7 +30,7 @@ function Wrapper (options) {
     return function (error, message) {
       if (error) {
         logger.debug('sending error response to', replyTo, error)
-        nats.publish(replyTo, JSON.stringify({error: error}), function () {
+        nats.publish(replyTo, JSON.stringify({error: {message: error.message, stack: error.stack}}), function () {
           logger.debug('error response sent to', replyTo)
         })
       } else {
