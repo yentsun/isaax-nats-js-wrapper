@@ -1,3 +1,9 @@
+[1.2.0]
+-------
+- [ ] ADDED queue group for all subscribers fix #5
+- [x] Standard JS polish
+
+
 [1.1.0] - 2017-04-15
 --------------------
 - [x] ADDED readme

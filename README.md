@@ -4,6 +4,8 @@ NATS Wrapper for JavaScript
 A wrapper over [node-nats](https://github.com/nats-io/node-nats), designed
 to meet the needs of ISAAX project.
 
+[![Standard - JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 
 Installation
 ------------
