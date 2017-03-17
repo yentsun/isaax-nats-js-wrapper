@@ -1,6 +1,6 @@
 [1.2.0]
 -------
-- [ ] ADDED queue group for all subscribers fix #5
+- [x] ADDED `listen` method to subscribe to point-to-point requests fix #5
 - [x] Standard JS polish
 
 

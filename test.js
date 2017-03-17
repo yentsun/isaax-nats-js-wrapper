@@ -65,10 +65,22 @@ describe('subscribe', function () {
   })
 })
 
+describe('listen', function () {
+  it('listens to point-to-point requests', function (done) {
+    NATSsubscribe.callsArgWith(2, JSON.stringify({data: {one: 'two'}}), 'REPLYTO_INBOX', 'test.data.requested')
+    wrapper.listen('test.data.requested', function (message, replyTo, subject) {
+      assert.equal(message.data.one, 'two')
+      assert.isOk(replyTo)
+      assert.equal(subject, 'test.data.requested')
+      done()
+    })
+  })
+})
+
 describe('process', function () {
   it('performs a process-subscription to a subject', function (done) {
     NATSsubscribe.callsArgWith(2, JSON.stringify({data: {one: 'two'}}), null, 'test.event.happened')
-    wrapper.process('test.event.happened', 'worker-group', function (message, subject) {
+    wrapper.process('test.event.happened', function (message, subject) {
       assert.equal(message.data.one, 'two')
       assert.equal(subject, 'test.event.happened')
       done()

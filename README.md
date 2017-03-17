@@ -47,6 +47,6 @@ Subscribe and process as worker queue:
 
 ```ecmascript 6
  nats.process('*.package.sent', 'package.workers', (pack, subject) => {
-        console.log(subject, pack);
-    });
+    console.log(subject, pack);
+});
 ```
