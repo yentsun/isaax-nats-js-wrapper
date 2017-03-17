@@ -1,3 +1,8 @@
+[1.3.0] - 2017-04-17
+--------------------
+- [x] ADDED `respond` function as part of returned params from `listen`
+
+
 [1.2.0] - 2017-04-17
 --------------------
 - [x] ADDED `listen` method to subscribe to point-to-point requests fix #5

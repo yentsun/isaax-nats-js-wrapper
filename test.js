@@ -68,10 +68,9 @@ describe('subscribe', function () {
 describe('listen', function () {
   it('listens to point-to-point requests', function (done) {
     NATSsubscribe.callsArgWith(2, JSON.stringify({data: {one: 'two'}}), 'REPLYTO_INBOX', 'test.data.requested')
-    wrapper.listen('test.data.requested', function (message, replyTo, subject) {
+    wrapper.listen('test.data.requested', function (message, respond) {
       assert.equal(message.data.one, 'two')
-      assert.isOk(replyTo)
-      assert.equal(subject, 'test.data.requested')
+      respond(null, {result: true})
       done()
     })
   })

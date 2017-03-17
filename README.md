@@ -11,7 +11,7 @@ Installation
 ------------
 
 ```
-npm install xshellinc/isaax-nats-js-wrapper#v1.1.0 --save
+npm install xshellinc/isaax-nats-js-wrapper#v1.3.0 --save
 ```
 
 Usage
@@ -30,9 +30,9 @@ _Note: this method uses `requestOne` inside, no deed to worry about max response
 Subscribe and respond to a request:
 
 ```ecmascript 6
-nats.subscribe('some.package', ({type}, replyTo) => {
-    pack.fetch(type, (error, pack) => {
-        nats.publish(replyTo, error, pack);
+nats.listen('some.request', ({id}, respond) => {
+    someModule.fetch(id, (error, pack) => {
+        respond(error, pack);
     });
 });
 ```
@@ -46,7 +46,7 @@ nats.publish('some.package.sent', pack);
 Subscribe and process as worker queue:
 
 ```ecmascript 6
- nats.process('*.package.sent', 'package.workers', (pack, subject) => {
+ nats.process('*.package.sent', (pack, subject) => {
     console.log(subject, pack);
 });
 ```

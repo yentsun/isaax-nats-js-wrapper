@@ -11,44 +11,49 @@ function Wrapper (options) {
     requestTimeout: 1000
   }
 
+  const self = this
+
   options = options ? merge(defaults, options) : defaults
 
   const nats = options.connection || NATS.connect(options.url)
   logger.info('connected to NATS:', nats.currentServer.url.host)
 
-  this.publish = function (subject, message) {
+  self.publish = function (subject, message) {
     logger.debug('publishing to', subject, message)
     nats.publish(subject, JSON.stringify(message), function () {
       logger.debug('message published', subject, message)
     })
   }
 
-  this.respond = function (subject, error, message) {
-    if (error) {
-      logger.debug('sending error response to', subject, error)
-      nats.publish(subject, JSON.stringify({error: error}), function () {
-        logger.debug('error response sent to', subject)
-      })
-    } else {
-      logger.debug('sending response to', subject, message)
-      nats.publish(subject, JSON.stringify(message), function () {
-        logger.debug('response sent to', subject)
-      })
+  // returned by `listen`, not to be used directly
+  self.respond = function (replyTo) {
+    return function (error, message) {
+      if (error) {
+        logger.debug('sending error response to', replyTo, error)
+        nats.publish(replyTo, JSON.stringify({error: error}), function () {
+          logger.debug('error response sent to', replyTo)
+        })
+      } else {
+        logger.debug('sending response to', replyTo, message)
+        nats.publish(replyTo, JSON.stringify(message), function () {
+          logger.debug('response sent to', replyTo)
+        })
+      }
     }
   }
 
   // subscribe to point-to-point requests
-  this.listen = function (subject, done) {
+  self.listen = function (subject, done) {
     const group = subject + '.workers'
     logger.debug('subscribing to requests', subject, 'as member of', group)
     nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
       logger.debug('responding to', subject, message)
-      done(JSON.parse(message), reply, subject)
+      done(JSON.parse(message), self.respond(reply))
     })
   }
 
   // subscribe to broadcasts
-  this.subscribe = function (subject, done) {
+  self.subscribe = function (subject, done) {
     logger.debug('subscribing to broadcasts', subject)
     nats.subscribe(subject, function (message, reply, subject) {
       logger.debug('responding to broadcast', subject, 'with', message)
@@ -57,7 +62,7 @@ function Wrapper (options) {
   }
 
   // subscribe as queue worker
-  this.process = function (subject, done) {
+  self.process = function (subject, done) {
     const group = subject + '.workers'
     logger.debug('subscribing to process', subject, 'queue as member of', group)
     nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
@@ -67,7 +72,7 @@ function Wrapper (options) {
   }
 
   // request one response
-  this.request = function (subject, message, done) {
+  self.request = function (subject, message, done) {
     logger.debug('>>>', subject, message)
     nats.requestOne(subject, JSON.stringify(message), null, options.requestTimeout, function (response) {
       logger.debug(response)
