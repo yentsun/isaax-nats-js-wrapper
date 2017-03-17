@@ -4,12 +4,14 @@ NATS Wrapper for JavaScript
 A wrapper over [node-nats](https://github.com/nats-io/node-nats), designed
 to meet the needs of ISAAX project.
 
+[![Standard - JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 
 Installation
 ------------
 
 ```
-npm install ssh://github.com/xshellinc/isaax-nats-js-wrapper#v1.1.0 --save
+npm install xshellinc/isaax-nats-js-wrapper#v1.1.0 --save
 ```
 
 Usage
@@ -45,6 +47,6 @@ Subscribe and process as worker queue:
 
 ```ecmascript 6
  nats.process('*.package.sent', 'package.workers', (pack, subject) => {
-        console.log(subject, pack);
-    });
+    console.log(subject, pack);
+});
 ```

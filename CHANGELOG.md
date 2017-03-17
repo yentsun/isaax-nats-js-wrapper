@@ -1,4 +1,10 @@
-[1.1.0] - 2017-04-15
+[1.2.0] - 2017-04-17
+--------------------
+- [x] ADDED `listen` method to subscribe to point-to-point requests fix #5
+- [x] Standard JS polish
+
+
+[1.1.0] - 2017-03-15
 --------------------
 - [x] ADDED readme
 - [x] ADDED `respond` method fix #4
@@ -6,12 +12,12 @@
 - [x] REMOVE `options` argument from `subscribe` #4
 
 
-[1.0.0] - 2017-04-12
+[1.0.0] - 2017-03-12
 --------------------
 - [x] CHANGED request response to return unwrapped object fix #3
 
 
-[0.2.2] - 2017-04-08
+[0.2.2] - 2017-03-08
 --------------------
 - [x] CHANGED request logging from verbs to arrows
 
