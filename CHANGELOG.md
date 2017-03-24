@@ -1,3 +1,6 @@
+- [x] ADDED Typescript definitions
+
+
 [1.3.1] - 2017-04-17
 --------------------
 - [x] FIXED error serialization
