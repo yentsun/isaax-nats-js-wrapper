@@ -50,3 +50,9 @@ Subscribe and process as worker queue:
     console.log(subject, pack);
 });
 ```
+
+Close NATS connection:
+
+```ecmascript 6
+nats.close();
+```

@@ -1,3 +1,4 @@
+- [x] ADDED `close` method which closes underlying NATS connection
 - [x] ADDED Typescript definitions
 
 
