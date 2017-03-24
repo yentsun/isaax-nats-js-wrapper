@@ -92,6 +92,12 @@ function Wrapper (options) {
       return done(null, res)
     })
   }
+
+  // close underlying connection with NATS
+  self.close = function() {
+    logger.info('closing connection with NATS:', nats.currentServer.url.host)
+    nats.close();
+  }
 }
 
 module.exports = Wrapper

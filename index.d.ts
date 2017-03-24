@@ -27,6 +27,9 @@ declare class Wrapper {
     /** Publish a message and wait for the first response */
     request(subject: string, message: any, done: RequestCallback): void;
 
+    /** Close underlying connection with NATS */
+    close(): void;
+
 }
 
 declare namespace Wrapper {
