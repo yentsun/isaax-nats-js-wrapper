@@ -8,14 +8,14 @@ function Wrapper (options) {
   }
 
   const defaults = {
-    requestTimeout: 1000
+    requestTimeout: 10000
   }
 
   const self = this
 
   options = options ? merge(defaults, options) : defaults
 
-  const nats = options.connection || NATS.connect(options.url)
+  const nats = options.connection || NATS.connect(options)
   logger.info('connected to NATS:', nats.currentServer.url.host)
 
   self.publish = function (subject, message) {
