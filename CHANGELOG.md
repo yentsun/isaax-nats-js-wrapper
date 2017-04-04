@@ -2,17 +2,22 @@
 - [x] ADDED Typescript definitions
 
 
-[1.3.1] - 2017-04-17
+[1.3.2] - 2017-04-04
+--------------------
+- [x] FIXED options loading
+
+
+[1.3.1] - 2017-03-17
 --------------------
 - [x] FIXED error serialization
 
 
-[1.3.0] - 2017-04-17
+[1.3.0] - 2017-03-17
 --------------------
 - [x] ADDED `respond` function as part of returned params from `listen`
 
 
-[1.2.0] - 2017-04-17
+[1.2.0] - 2017-03-17
 --------------------
 - [x] ADDED `listen` method to subscribe to point-to-point requests fix #5
 - [x] Standard JS polish
