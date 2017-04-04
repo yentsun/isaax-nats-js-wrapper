@@ -34,6 +34,7 @@ function Wrapper (options) {
           logger.debug('error response sent to', replyTo)
         })
       } else {
+        if (!message) message = {}  //provide an empty object for further JSON parsing
         logger.debug('sending response to', replyTo, message)
         nats.publish(replyTo, JSON.stringify(message), function () {
           logger.debug('response sent to', replyTo)
@@ -75,7 +76,7 @@ function Wrapper (options) {
   self.request = function (subject, message, done) {
     logger.debug('>>>', subject, message)
     nats.requestOne(subject, JSON.stringify(message), null, options.requestTimeout, function (response) {
-      logger.debug(response)
+      logger.debug('got response', response)
       if (response.code && response.code === NATS.REQ_TIMEOUT) {
         logger.error('response timeout')
         return done(new Error('response timeout'))
@@ -91,6 +92,12 @@ function Wrapper (options) {
       logger.debug('<<<', res)
       return done(null, res)
     })
+  }
+
+  // close underlying connection with NATS
+  self.close = function() {
+    logger.info('closing connection with NATS:', nats.currentServer.url.host)
+    nats.close();
   }
 }
 
