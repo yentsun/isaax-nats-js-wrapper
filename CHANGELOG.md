@@ -2,6 +2,11 @@
 - [x] ADDED Typescript definitions
 
 
+[1.3.3] - 2017-04-04
+--------------------
+- [x] FIXED empty response handling
+
+
 [1.3.2] - 2017-04-04
 --------------------
 - [x] FIXED options loading
