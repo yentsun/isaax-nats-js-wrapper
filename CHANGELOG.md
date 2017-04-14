@@ -1,3 +1,4 @@
+[1.3.4] - 2017-04-14
 - [x] ADDED `close` method which closes underlying NATS connection
 - [x] ADDED Typescript definitions
 
