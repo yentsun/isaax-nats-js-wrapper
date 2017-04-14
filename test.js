@@ -8,11 +8,13 @@ const connection = {
   subscribe: function () {},
   publish: function () {},
   requestOne: function () {},
+  close: function () {},
   currentServer: {url: {host: 'mock host'}}
 }
 const NATSrequestOne = sinon.stub(connection, 'requestOne')
 const NATSsubscribe = sinon.stub(connection, 'subscribe')
 const NATSpublish = sinon.stub(connection, 'publish')
+const NATSclose = sinon.stub(connection, 'close')
 const wrapper = Wrapper({connection: connection})
 
 describe('request', function () {
@@ -111,3 +113,10 @@ describe('respond', function () {
     done()
   })
 })
+
+describe('close', function() {
+  it('closes underlying connection with NATS', function() {
+    wrapper.close();
+    assert.isTrue(NATSclose.calledOnce);
+  });
+});
