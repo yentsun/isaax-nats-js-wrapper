@@ -37,6 +37,9 @@ nats.listen('some.request', ({id}, respond) => {
 });
 ```
 
+_Note: a listener is automatically added to queue group `some.request.listeners`_
+
+
 Publish an event:
 
 ```ecmascript 6
