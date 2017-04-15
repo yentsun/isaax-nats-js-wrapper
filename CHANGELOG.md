@@ -1,6 +1,10 @@
 [1.4.0] - 2017-04-15
 --------------------
 - [x] CHANGED `response` behavior to always return JSON array with error as first element and message as the second fix #9
+
+
+[1.3.4] - 2017-04-14
+--------------------
 - [x] ADDED `close` method which closes underlying NATS connection
 - [x] ADDED Typescript definitions
 
