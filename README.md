@@ -37,6 +37,9 @@ nats.listen('some.request', ({id}, respond) => {
 });
 ```
 
+_Note: a listener is automatically added to queue group `some.request.listeners`_
+
+
 Publish an event:
 
 ```ecmascript 6
@@ -49,4 +52,10 @@ Subscribe and process as worker queue:
  nats.process('*.package.sent', (pack, subject) => {
     console.log(subject, pack);
 });
+```
+
+Close NATS connection:
+
+```ecmascript 6
+nats.close();
 ```

@@ -8,16 +8,18 @@ const connection = {
   subscribe: function () {},
   publish: function () {},
   requestOne: function () {},
+  close: function () {},
   currentServer: {url: {host: 'mock host'}}
 }
 const NATSrequestOne = sinon.stub(connection, 'requestOne')
 const NATSsubscribe = sinon.stub(connection, 'subscribe')
 const NATSpublish = sinon.stub(connection, 'publish')
+const NATSclose = sinon.stub(connection, 'close')
 const wrapper = Wrapper({connection: connection})
 
 describe('request', function () {
   it('performs a request and returns successful result unwrapped', function (done) {
-    NATSrequestOne.callsArgWith(4, JSON.stringify({id: 'ACC001'}))
+    NATSrequestOne.callsArgWith(4, JSON.stringify([null, {id: 'ACC001'}]))
     wrapper.request('account.get', {id: 'ACC001'}, function (error, account) {
       assert.isNull(error)
       assert.equal(account.id, 'ACC001')
@@ -26,16 +28,25 @@ describe('request', function () {
   })
 
   it('performs a request and returns error', function (done) {
-    NATSrequestOne.callsArgWith(4, JSON.stringify({error: {message: 'account service error'}}))
-    wrapper.request('account.get', {id: 'ACC001'}, function (error, response) {
+    NATSrequestOne.callsArgWith(4, JSON.stringify([{message: 'account service error'}]))
+    wrapper.request('account.get', {id: 'ACC001'}, function (error, account) {
       assert.equal(error.message, 'account service error')
-      assert.isNotOk(response)
+      assert.isNotOk(account)
+      done()
+    })
+  })
+
+  it('performs a request and returns an empty response', function (done) {
+    NATSrequestOne.callsArgWith(4, JSON.stringify([null, null]))
+    wrapper.request('account.get', {id: 'ACC001'}, function (error, account) {
+      assert.isNull(error)
+      assert.isNull(account)
       done()
     })
   })
 
   it('performs a request and returns error from error.detail', function (done) {
-    NATSrequestOne.callsArgWith(4, JSON.stringify({error: {detail: 'account service error'}}))
+    NATSrequestOne.callsArgWith(4, JSON.stringify([{detail: 'account service error'}]))
     wrapper.request('account.get', {id: 'ACC001'}, function (error, response) {
       assert.equal(error.message, 'account service error')
       assert.isNotOk(response)
@@ -99,15 +110,22 @@ describe('publish', function () {
 describe('respond', function () {
   it('responds with an error', function (done) {
     NATSpublish.callsArgWith(2, null)
-    wrapper.respond('test.request', new Error('something bad happened'))
+    wrapper._respond('test.request', new Error('something bad happened'))
     assert.isTrue(NATSpublish.called)
     done()
   })
 
   it('responds normally', function (done) {
     NATSpublish.callsArgWith(2, null)
-    wrapper.respond('test.request', null, {response: 'ok'})
+    wrapper._respond('test.request', null, {response: 'ok'})
     assert.isTrue(NATSpublish.called)
     done()
+  })
+})
+
+describe('close', function () {
+  it('closes underlying connection with NATS', function () {
+    wrapper.close()
+    assert.isTrue(NATSclose.calledOnce)
   })
 })
