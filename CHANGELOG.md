@@ -1,3 +1,8 @@
+[1.5.0] - 2017-05-10
+--------------------
+- [x] ADDED `group` parameter to queue subscriptions
+
+
 [1.4.0] - 2017-04-15
 --------------------
 - [x] CHANGED `response` behavior to always return JSON array with error as first element and message as the second fix #9
