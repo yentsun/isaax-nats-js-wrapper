@@ -11,11 +11,20 @@ Installation
 ------------
 
 ```
-npm install xshellinc/isaax-nats-js-wrapper#v1.3.0 --save
+npm install xshellinc/isaax-nats-js-wrapper#v1.4.0 --save
 ```
 
 Usage
 -----
+
+Create an instance of the wrapper:
+
+```ecmascript 6
+import NATSWrapper from 'isaax-nats-js-wrapper';
+
+const nats = NATSWrapper({group: 'some-service'});
+```
+
 
 Publish a request and get a response in callback:
 
@@ -54,7 +63,7 @@ Subscribe and process as worker queue:
 });
 ```
 
-Close NATS connection:
+Close NATS connection (if needed):
 
 ```ecmascript 6
 nats.close();
