@@ -1,5 +1,5 @@
 const NATS = require('nats')
-const logger = require('./lib/logger')
+const Logger = require('./lib/logger')
 const merge = require('lodash/merge')
 
 function Wrapper (options) {
@@ -8,15 +8,17 @@ function Wrapper (options) {
   }
 
   const defaults = {
-    requestTimeout: 10000
+    requestTimeout: 10000,
+    group: 'default'
   }
-
-  const self = this
-
   options = options ? merge(defaults, options) : defaults
 
+  const logger = Logger(options.group)
   const nats = options.connection || NATS.connect(options)
   logger.info('connected to NATS:', nats.currentServer.url.host)
+  logger.info('instance group is:', options.group)
+
+  const self = this
 
   self.publish = function (subject, message) {
     logger.debug('publishing to', subject, message)
@@ -63,7 +65,7 @@ function Wrapper (options) {
 
   // subscribe as queue worker
   self.process = function (subject, done) {
-    const group = subject + '.workers'
+    const group = subject + '.workers.' + options.group
     logger.debug('subscribing to process', subject, 'queue as member of', group)
     nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
       logger.debug('processing', subject, message)
