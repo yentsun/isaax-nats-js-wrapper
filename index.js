@@ -13,7 +13,7 @@ function Wrapper (options) {
   }
   options = options ? merge(defaults, options) : defaults
 
-  const logger = Logger(options.group)
+  const logger = options.logger || Logger(options.group)
   const nats = options.connection || NATS.connect(options)
   logger.info('connected to NATS:', nats.currentServer.url.host)
   logger.info('instance group is:', options.group)

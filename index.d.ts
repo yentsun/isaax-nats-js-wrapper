@@ -1,4 +1,4 @@
-// Type definitions for isaax-nats-js-wrapper 1.3.1
+// Type definitions for isaax-nats-js-wrapper 1.5.0
 
 type ListenCallback = (this: void, message: any, respond: (error: Error, message: any) => void) => void;
 
@@ -34,16 +34,28 @@ declare class Wrapper {
 
 declare namespace Wrapper {
 
+    export interface Logger {
+        info(message: string, ...meta: any[]);
+        debug(message: string, ...meta: any[]);
+        error(message: string, ...meta: any[]);
+    }
+
     export interface Options {
 
         /** Request timeout */
-        requestTimeout?: number
+        requestTimeout?: number;
 
         /** Existing NATS connection (if any) */
-        connection?: any,
+        connection?: any;
 
         /** URL for NATS to connect to (if no connection) */
-        url?: string
+        url?: string;
+
+        /** TODO: Add description */
+        group?: string;
+
+        /** Overrides default logger */
+        logger?: Logger;
     }
 
 }

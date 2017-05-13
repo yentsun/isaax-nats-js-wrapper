@@ -1,3 +1,5 @@
+- [x] ADDED option to override default logger
+
 [1.5.0] - 2017-05-10
 --------------------
 - [x] ADDED `group` parameter to queue subscriptions
