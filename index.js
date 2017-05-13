@@ -1,5 +1,5 @@
 const NATS = require('nats')
-const logger = require('./lib/logger')
+const Logger = require('./lib/logger')
 const merge = require('lodash/merge')
 
 function Wrapper (options) {
@@ -8,15 +8,17 @@ function Wrapper (options) {
   }
 
   const defaults = {
-    requestTimeout: 10000
+    requestTimeout: 10000,
+    group: 'default'
   }
-
-  const self = this
-
   options = options ? merge(defaults, options) : defaults
 
+  const logger = options.logger || Logger(options.group)
   const nats = options.connection || NATS.connect(options)
   logger.info('connected to NATS:', nats.currentServer.url.host)
+  logger.info('instance group is:', options.group)
+
+  const self = this
 
   self.publish = function (subject, message) {
     logger.debug('publishing to', subject, message)
@@ -26,17 +28,16 @@ function Wrapper (options) {
   }
 
   // returned by `listen`, not to be used directly
-  self.respond = function (replyTo) {
-    return function (error, message) {
+  self._respond = function (replyTo) {
+    return function (error, response) {
       if (error) {
         logger.debug('sending error response to', replyTo, error)
-        nats.publish(replyTo, JSON.stringify({error: {message: error.message, stack: error.stack}}), function () {
+        nats.publish(replyTo, JSON.stringify([{message: error.message, stack: error.stack}]), function () {
           logger.debug('error response sent to', replyTo)
         })
       } else {
-        if (!message) message = {}  //provide an empty object for further JSON parsing
-        logger.debug('sending response to', replyTo, message)
-        nats.publish(replyTo, JSON.stringify(message), function () {
+        logger.debug('sending response to', replyTo, response)
+        nats.publish(replyTo, JSON.stringify([null, response]), function () {
           logger.debug('response sent to', replyTo)
         })
       }
@@ -45,11 +46,11 @@ function Wrapper (options) {
 
   // subscribe to point-to-point requests
   self.listen = function (subject, done) {
-    const group = subject + '.workers'
+    const group = subject + '.listeners'
     logger.debug('subscribing to requests', subject, 'as member of', group)
     nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
       logger.debug('responding to', subject, message)
-      done(JSON.parse(message), self.respond(reply))
+      done(JSON.parse(message), self._respond(reply))
     })
   }
 
@@ -64,7 +65,7 @@ function Wrapper (options) {
 
   // subscribe as queue worker
   self.process = function (subject, done) {
-    const group = subject + '.workers'
+    const group = subject + '.workers.' + options.group
     logger.debug('subscribing to process', subject, 'queue as member of', group)
     nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
       logger.debug('processing', subject, message)
@@ -81,9 +82,9 @@ function Wrapper (options) {
         logger.error('response timeout')
         return done(new Error('response timeout'))
       }
-      var res = JSON.parse(response)
-      const error = res.error
-      delete res.error
+      response = JSON.parse(response)
+      const error = response[0]
+      const res = response[1]
       if (error) {
         logger.error('request ended in error:', error.message || error.detail)
         return done(new Error(error.message || error.detail))
@@ -95,9 +96,9 @@ function Wrapper (options) {
   }
 
   // close underlying connection with NATS
-  self.close = function() {
+  self.close = function () {
     logger.info('closing connection with NATS:', nats.currentServer.url.host)
-    nats.close();
+    nats.close()
   }
 }
 
