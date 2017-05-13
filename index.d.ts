@@ -35,9 +35,9 @@ declare class Wrapper {
 declare namespace Wrapper {
 
     export interface Logger {
-        info(message: string, ...meta: any[]);
-        debug(message: string, ...meta: any[]);
-        error(message: string, ...meta: any[]);
+        info(message: string, ...meta: any[]): void;
+        debug(message: string, ...meta: any[]): void;
+        error(message: string, ...meta: any[]): void;
     }
 
     export interface Options {
