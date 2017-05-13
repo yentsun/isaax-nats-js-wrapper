@@ -33,7 +33,7 @@ nats.request('some.package', {type: 'ordinary'}, (error, package) => {
     console.log(error, package)
 });
 ```
-_Note: this method uses `requestOne` inside, no deed to worry about max responses_ 
+_Note: this method uses `requestOne` inside, no need to worry about max responses_ 
 
 
 Subscribe and respond to a request:
