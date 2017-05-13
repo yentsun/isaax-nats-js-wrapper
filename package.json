@@ -1,6 +1,6 @@
 {
   "name": "isaax-nats-js-wrapper",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "A module wrapping nats communication for ISAAX",
   "main": "index.js",
   "types": "index.d.ts",
