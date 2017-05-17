@@ -86,8 +86,9 @@ function Wrapper (options) {
       const error = response[0]
       const res = response[1]
       if (error) {
-        logger.error('request ended in error:', error.message || error.detail)
-        return done(new Error(error.message || error.detail))
+        const errorMessage = error.message || error.detail
+        logger.error('request ended in error:', errorMessage, error.stack)
+        return done(new Error(errorMessage))
       }
 
       logger.debug('<<<', res)
