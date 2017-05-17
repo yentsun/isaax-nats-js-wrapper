@@ -1,3 +1,8 @@
+[1.5.2] - 2017-05-17
+--------------------
+- [x] ADDED error.stack to error response log entry
+
+
 [1.5.1] - 2017-05-13
 --------------------
 - [x] ADDED option to override default logger
