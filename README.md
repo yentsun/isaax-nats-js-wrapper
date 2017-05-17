@@ -11,7 +11,7 @@ Installation
 ------------
 
 ```
-npm install xshellinc/isaax-nats-js-wrapper#v1.4.0 --save
+npm install xshellinc/isaax-nats-js-wrapper#v1.5.2 --save
 ```
 
 Usage
