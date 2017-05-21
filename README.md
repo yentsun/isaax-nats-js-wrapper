@@ -63,7 +63,7 @@ Subscribe and process as worker queue:
 });
 ```
 
-`listen`, `subscribe` and `process` methods return an integer subscription ID (SID) which can be used to unsubscribe from subject:
+`listen`, `subscribe` and `process` methods return an integer subscription ID (SID) which can be used to unsubscribe from a subject:
 
 ```ecmascript 6
 const sid = nats.process('*.package.sent', (pack, subject) => {
