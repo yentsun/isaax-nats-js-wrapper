@@ -48,7 +48,7 @@ function Wrapper (options) {
   self.listen = function (subject, done) {
     const group = subject + '.listeners'
     logger.debug('subscribing to requests', subject, 'as member of', group)
-    nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
+    return nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
       logger.debug('responding to', subject, message)
       done(JSON.parse(message), self._respond(reply))
     })
@@ -57,7 +57,7 @@ function Wrapper (options) {
   // subscribe to broadcasts
   self.subscribe = function (subject, done) {
     logger.debug('subscribing to broadcasts', subject)
-    nats.subscribe(subject, function (message, reply, subject) {
+    return nats.subscribe(subject, function (message, reply, subject) {
       logger.debug('responding to broadcast', subject, 'with', message)
       done(JSON.parse(message), reply, subject)
     })
@@ -67,7 +67,7 @@ function Wrapper (options) {
   self.process = function (subject, done) {
     const group = subject + '.workers.' + options.group
     logger.debug('subscribing to process', subject, 'queue as member of', group)
-    nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
+    return nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
       logger.debug('processing', subject, message)
       done(JSON.parse(message), subject)
     })
@@ -86,13 +86,20 @@ function Wrapper (options) {
       const error = response[0]
       const res = response[1]
       if (error) {
-        logger.error('request ended in error:', error.message || error.detail)
-        return done(new Error(error.message || error.detail))
+        const errorMessage = error.message || error.detail
+        logger.error('request ended in error:', errorMessage, error.stack)
+        return done(new Error(errorMessage))
       }
 
       logger.debug('<<<', res)
       return done(null, res)
     })
+  }
+
+  // unsubscribe from subject
+  self.unsubscribe = function(sid) {
+    logger.debug(`unsubscribing from subject (sid: ${sid})`);
+    nats.unsubscribe(sid);
   }
 
   // close underlying connection with NATS

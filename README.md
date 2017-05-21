@@ -11,7 +11,7 @@ Installation
 ------------
 
 ```
-npm install xshellinc/isaax-nats-js-wrapper#v1.4.0 --save
+npm install xshellinc/isaax-nats-js-wrapper#v1.5.2 --save
 ```
 
 Usage
@@ -61,6 +61,18 @@ Subscribe and process as worker queue:
  nats.process('*.package.sent', (pack, subject) => {
     console.log(subject, pack);
 });
+```
+
+`listen`, `subscribe` and `process` methods return an integer subscription ID (SID) which can be used to unsubscribe from a subject:
+
+```ecmascript 6
+const sid = nats.process('*.package.sent', (pack, subject) => {
+    console.log(subject, pack);
+});
+
+// ...
+
+nats.unsubscribe(sid);
 ```
 
 Close NATS connection (if needed):

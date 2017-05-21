@@ -15,17 +15,32 @@ declare class Wrapper {
     /** Publish a message */
     publish(subject: string, message: any): void;
 
-    /** Subscribe to point-to-point requests */
-    listen(subject: string, done: ListenCallback): void;
+    /**
+     * Subscribe to point-to-point requests
+     * @return Subscriber Id
+     */
+    listen(subject: string, done: ListenCallback): number;
 
-    /** Subscribe to broadcasts */
-    subscribe(subject: string, done: SubscribeCallback): void;
+    /**
+     * Subscribe to broadcasts
+     * @return Subscriber Id
+     */
+    subscribe(subject: string, done: SubscribeCallback): number;
 
-    /** Subscribe as queue worker */
-    process(subject: string, done: ProcessCallback): void;
+    /**
+     * Subscribe as queue worker
+     * @return Subscriber Id
+     */
+    process(subject: string, done: ProcessCallback): number;
 
     /** Publish a message and wait for the first response */
     request(subject: string, message: any, done: RequestCallback): void;
+
+    /**
+     * Unsubscribe from subject
+     * @param [sid] Subscriber Id
+     */
+    unsubscribe(sid: number): void;
 
     /** Close underlying connection with NATS */
     close(): void;

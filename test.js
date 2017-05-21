@@ -8,12 +8,14 @@ const connection = {
   subscribe: function () {},
   publish: function () {},
   requestOne: function () {},
+  unsubscribe: function () {},
   close: function () {},
   currentServer: {url: {host: 'mock host'}}
 }
 const NATSrequestOne = sinon.stub(connection, 'requestOne')
 const NATSsubscribe = sinon.stub(connection, 'subscribe')
 const NATSpublish = sinon.stub(connection, 'publish')
+const NATSunsubscribe = sinon.stub(connection, 'unsubscribe')
 const NATSclose = sinon.stub(connection, 'close')
 const wrapper = Wrapper({connection: connection})
 
@@ -120,6 +122,13 @@ describe('respond', function () {
     wrapper._respond('test.request', null, {response: 'ok'})
     assert.isTrue(NATSpublish.called)
     done()
+  })
+})
+
+describe('unsubscribe', function () {
+  it('unsubscribes from NATS subject', function () {
+    wrapper.unsubscribe(123)
+    assert.isTrue(NATSunsubscribe.withArgs(123).calledOnce)
   })
 })
 
