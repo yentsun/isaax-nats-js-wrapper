@@ -1,3 +1,6 @@
+- [x] ADDED `unsubscribe` method
+
+
 [1.5.2] - 2017-05-17
 --------------------
 - [x] ADDED error.stack to error response log entry
