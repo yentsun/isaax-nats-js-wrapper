@@ -1,3 +1,8 @@
+[1.5.3] - 2017-07-03
+--------------------
+- [x] ADDED more info @ error response logging
+
+
 [1.5.2] - 2017-05-17
 --------------------
 - [x] ADDED error.stack to error response log entry

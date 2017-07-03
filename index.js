@@ -79,7 +79,7 @@ function Wrapper (options) {
     nats.requestOne(subject, JSON.stringify(message), null, options.requestTimeout, function (response) {
       logger.debug('got response', response)
       if (response.code && response.code === NATS.REQ_TIMEOUT) {
-        logger.error('response timeout')
+        logger.error('response timeout for', subject, message)
         return done(new Error('response timeout'))
       }
       response = JSON.parse(response)
@@ -87,7 +87,7 @@ function Wrapper (options) {
       const res = response[1]
       if (error) {
         const errorMessage = error.message || error.detail
-        logger.error('request ended in error:', errorMessage, error.stack)
+        logger.error('request for', subject, 'ended in error:', errorMessage, error.stack)
         return done(new Error(errorMessage))
       }
 
