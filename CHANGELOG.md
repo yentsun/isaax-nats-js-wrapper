@@ -1,3 +1,6 @@
+- [x] ADDED password screening fix #12
+
+
 [1.5.4] - 2017-07-03
 --------------------
 - [x] ADDED more info @ error response loggin

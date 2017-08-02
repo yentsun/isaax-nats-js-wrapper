@@ -29,6 +29,15 @@ describe('request', function () {
     })
   })
 
+  it('performs a request and screens password field in logs', function (done) {
+    NATSrequestOne.callsArgWith(4, JSON.stringify([null, {password: 'should not see this'}]))
+    wrapper.request('account.register', {email: 'some@user.com', password: 'should not see this'}, function (error, account) {
+      assert.isNull(error)
+      assert.equal(account.password, 'should not see this')
+      done()
+    })
+  })
+
   it('performs a request and returns error', function (done) {
     NATSrequestOne.callsArgWith(4, JSON.stringify([{message: 'account service error'}]))
     wrapper.request('account.get', {id: 'ACC001'}, function (error, account) {
