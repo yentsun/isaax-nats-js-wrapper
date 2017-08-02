@@ -1,11 +1,17 @@
+[1.6.0] - 2017-08-02
+--------------------
+- [x] ADDED password screening fix #12
+
+
 [1.5.4] - 2017-07-03
 --------------------
-- [x] ADDED more info @ error response logging
+- [x] ADDED more info @ error response loggin
 
 
 [1.5.3] - 2017-05-21
 --------------------
 - [x] ADDED `unsubscribe` method
+- [x] ADDED more info @ error response logging
 
 
 [1.5.2] - 2017-05-17

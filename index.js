@@ -75,9 +75,9 @@ function Wrapper (options) {
 
   // request one response
   self.request = function (subject, message, done) {
-    logger.debug('>>>', subject, message)
+    const meta = JSON.parse(JSON.stringify(message))  // important to clone here, as we are rewriting meta
+    logger.debug('IN', subject, meta)
     nats.requestOne(subject, JSON.stringify(message), null, options.requestTimeout, function (response) {
-      logger.debug('got response', response)
       if (response.code && response.code === NATS.REQ_TIMEOUT) {
         logger.error('response timeout for', subject, message)
         return done(new Error('response timeout'))
@@ -90,16 +90,16 @@ function Wrapper (options) {
         logger.error('request for', subject, 'ended in error:', errorMessage, error.stack)
         return done(new Error(errorMessage))
       }
-
-      logger.debug('<<<', res)
+      const meta = JSON.parse(JSON.stringify(res))
+      logger.debug('OUT', subject, meta)
       return done(null, res)
     })
   }
 
   // unsubscribe from subject
-  self.unsubscribe = function(sid) {
-    logger.debug(`unsubscribing from subject (sid: ${sid})`);
-    nats.unsubscribe(sid);
+  self.unsubscribe = function (sid) {
+    logger.debug(`unsubscribing from subject (sid: ${sid})`)
+    nats.unsubscribe(sid)
   }
 
   // close underlying connection with NATS
