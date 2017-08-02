@@ -1,3 +1,5 @@
+[1.6.0] - 2017-08-02
+--------------------
 - [x] ADDED password screening fix #12
 
 
