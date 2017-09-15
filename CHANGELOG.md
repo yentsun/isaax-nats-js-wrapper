@@ -1,5 +1,5 @@
-[2.0.0]
--------
+[2.0.0] - 2017-09-15
+--------------------
 - [x] ADDED ids to request/response
 - [x] ADDED `connected` event handling fix #13
 - [x] CHANGE sinon mocks to live NATS connection @ tests
