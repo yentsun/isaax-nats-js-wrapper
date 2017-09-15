@@ -4,6 +4,10 @@
 - [x] ADDED `connected` event handling fix #13
 - [x] CHANGE sinon mocks to live NATS connection @ tests
 - [x] REMOVED js standard
+
+
+[1.6.0] - 2017-08-02
+--------------------
 - [x] ADDED password screening fix #12
 
 
@@ -15,6 +19,7 @@
 [1.5.3] - 2017-05-21
 --------------------
 - [x] ADDED `unsubscribe` method
+- [x] ADDED more info @ error response logging
 
 
 [1.5.2] - 2017-05-17
