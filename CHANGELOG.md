@@ -1,3 +1,11 @@
+[2.0.0] - 2017-09-15
+--------------------
+- [x] ADDED ids to request/response
+- [x] ADDED `connected` event handling fix #13
+- [x] CHANGE sinon mocks to live NATS connection @ tests
+- [x] REMOVED js standard
+
+
 [1.6.0] - 2017-08-02
 --------------------
 - [x] ADDED password screening fix #12
