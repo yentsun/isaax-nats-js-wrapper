@@ -1,112 +1,117 @@
-const NATS = require('nats')
-const Logger = require('./lib/logger')
-const merge = require('lodash/merge')
+const nats = require('nats');
+const {EventEmitter} = require('events');
+const merge = require('lodash/merge');
+const hyperid = require('hyperid');
+const Logger = require('./lib/logger');
 
-function Wrapper (options) {
-  if (!(this instanceof Wrapper)) {
-    return new Wrapper(options)
-  }
 
-  const defaults = {
-    requestTimeout: 10000,
-    group: 'default'
-  }
-  options = options ? merge(defaults, options) : defaults
+module.exports = class extends EventEmitter {
 
-  const logger = options.logger || Logger(options.group)
-  const nats = options.connection || NATS.connect(options)
-  logger.info('connected to NATS:', nats.currentServer.url.host)
-  logger.info('instance group is:', options.group)
+    constructor(options) {
+        super();
+        const defaults = {
+            requestTimeout: 10000,
+            group: 'default'
+        };
+        this._options = options ? merge(defaults, options) : defaults;
+        this._logger = this._options.logger || Logger(this._options.group);
+        this._nats = nats.connect(options);
+        this._instance = hyperid();
+        this._nats.on('connect', () => {
+            this._logger.info('connected to NATS server:', this._nats.currentServer.url.host);
+            this._logger.info('id:', this._instance());
+            this._logger.info('group:', this._options.group);
+            this.emit('connect');
+        });
+        this._nats.on('error', (error) => {
+            this._logger.error(error.message);
+            this.emit('error', error);
+        });
 
-  const self = this
-
-  self.publish = function (subject, message) {
-    logger.debug('publishing to', subject, message)
-    nats.publish(subject, JSON.stringify(message), function () {
-      logger.debug('message published', subject, message)
-    })
-  }
-
-  // returned by `listen`, not to be used directly
-  self._respond = function (replyTo) {
-    return function (error, response) {
-      if (error) {
-        logger.debug('sending error response to', replyTo, error)
-        nats.publish(replyTo, JSON.stringify([{message: error.message, stack: error.stack}]), function () {
-          logger.debug('error response sent to', replyTo)
-        })
-      } else {
-        logger.debug('sending response to', replyTo, response)
-        nats.publish(replyTo, JSON.stringify([null, response]), function () {
-          logger.debug('response sent to', replyTo)
-        })
-      }
     }
-  }
 
-  // subscribe to point-to-point requests
-  self.listen = function (subject, done) {
-    const group = subject + '.listeners'
-    logger.debug('subscribing to requests', subject, 'as member of', group)
-    return nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
-      logger.debug('responding to', subject, message)
-      done(JSON.parse(message), self._respond(reply))
-    })
-  }
+    publish(subject, message) {
+        this._logger.debug('publishing to', subject, message);
+        this._nats.publish(subject, JSON.stringify(message), () => {
+            this._logger.debug('message published', subject, message)
+        })
+    };
 
-  // subscribe to broadcasts
-  self.subscribe = function (subject, done) {
-    logger.debug('subscribing to broadcasts', subject)
-    return nats.subscribe(subject, function (message, reply, subject) {
-      logger.debug('responding to broadcast', subject, 'with', message)
-      done(JSON.parse(message), reply, subject)
-    })
-  }
+    // returned by `listen`, not to be used directly
+    _respond(replyTo) {
+        return (error, response) => {
+            if (error) {
+                this._logger.debug('sending error response to', replyTo, error);
+                this._nats.publish(replyTo, JSON.stringify([{message: error.message || error.detail, stack: error.stack}]), () => {
+                    this._logger.debug('error response sent to', replyTo)
+                })
+            } else {
+                this._nats.publish(replyTo, JSON.stringify([null, response]), () => {
+                })
+            }
+        }
+    };
 
-  // subscribe as queue worker
-  self.process = function (subject, done) {
-    const group = subject + '.workers.' + options.group
-    logger.debug('subscribing to process', subject, 'queue as member of', group)
-    return nats.subscribe(subject, {queue: group}, function (message, reply, subject) {
-      logger.debug('processing', subject, message)
-      done(JSON.parse(message), subject)
-    })
-  }
+    // subscribe to point-to-point requests
+    listen(subject, done) {
+        const group = subject + '.listeners';
+        this._logger.debug('subscribing to requests', subject, 'as member of', group);
+        return this._nats.subscribe(subject, {queue: group}, (message, reply, subject) => {
+            done(JSON.parse(message), this._respond(reply))
+        })
+    };
 
-  // request one response
-  self.request = function (subject, message, done) {
-    const meta = JSON.parse(JSON.stringify(message))  // important to clone here, as we are rewriting meta
-    logger.debug('IN', subject, meta)
-    nats.requestOne(subject, JSON.stringify(message), null, options.requestTimeout, function (response) {
-      if (response.code && response.code === NATS.REQ_TIMEOUT) {
-        logger.error('response timeout for', subject, message)
-        return done(new Error('response timeout'))
-      }
-      response = JSON.parse(response)
-      const error = response[0]
-      const res = response[1]
-      if (error) {
-        const errorMessage = error.message || error.detail
-        logger.error('request for', subject, 'ended in error:', errorMessage, error.stack)
-        return done(new Error(errorMessage))
-      }
-      const meta = JSON.parse(JSON.stringify(res))
-      logger.debug('OUT', subject, meta)
-      return done(null, res)
-    })
-  }
+    // subscribe to broadcasts
+    subscribe(subject, done) {
+        this._logger.debug('subscribing to broadcasts', subject);
+        return this._nats.subscribe(subject, (message, replyTo, subject) => {
+            this._logger.debug('got broadcast', subject, message);
+            done(JSON.parse(message), replyTo, subject);
+        })
+    };
 
-  // unsubscribe from subject
-  self.unsubscribe = function (sid) {
-    logger.debug(`unsubscribing from subject (sid: ${sid})`)
-    nats.unsubscribe(sid)
-  }
+    // subscribe as queue worker
+    process(subject, done) {
+        const group = subject + '.workers.' + this._options.group;
+        this._logger.debug('subscribing to process', subject, 'queue as member of', group);
+        return this._nats.subscribe(subject, {queue: group}, (message, reply, subject) => {
+            this._logger.debug('processing', subject, message);
+            done(JSON.parse(message), subject);
+        })
+    };
 
-  // close underlying connection with NATS
-  self.close = function () {
-    logger.info('closing connection with NATS:', nats.currentServer.url.host)
-    nats.close()
-  }
-}
+    // request one response
+    request(subject, message, done) {
+        const meta = JSON.parse(JSON.stringify(message));  // important to clone here, as we are rewriting meta
+        const id = this._instance();
+        this._logger.debug('[>>', id, '>>]', subject, meta);
+        this._nats.requestOne(subject, JSON.stringify(message), null, this._options.requestTimeout, (response) => {
+            if (response.code && response.code === nats.REQ_TIMEOUT) {
+                this._logger.error('[!!', id, '!!] timeout', subject, message);
+                return done(new Error('response timeout'));
+            }
+            response = JSON.parse(response);
+            const error = response[0];
+            const res = response[1];
+            if (error) {
+                this._logger.error('[!!', id, '!!] ', error.message, error.stack);
+                return done(new Error(error.message));
+            }
+            const meta = JSON.parse(JSON.stringify(res));
+            this._logger.debug('[<<', id, '<<]', subject, meta);
+            return done(null, res);
+        })
+    };
 
-module.exports = Wrapper
+    // unsubscribe from subscription by id
+    unsubscribe(sid) {
+        this._logger.debug(`unsubscribing ${sid})`);
+        this._nats.unsubscribe(sid);
+    };
+
+    // close underlying connection with NATS
+    close() {
+        this._logger.info('closing connection with NATS:', this._nats.currentServer.url.host);
+        this._nats.close();
+    }
+};

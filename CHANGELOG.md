@@ -1,3 +1,9 @@
+[2.0.0]
+-------
+- [x] ADDED ids to request/response
+- [x] ADDED `connected` event handling fix #13
+- [x] CHANGE sinon mocks to live NATS connection @ tests
+- [x] REMOVED js standard
 - [x] ADDED password screening fix #12
 
 
