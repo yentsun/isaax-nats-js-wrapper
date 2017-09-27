@@ -105,7 +105,7 @@ module.exports = class extends EventEmitter {
 
     // unsubscribe from subscription by id
     unsubscribe(sid) {
-        this._logger.debug(`unsubscribing ${sid})`);
+        this._logger.debug(`unsubscribing from ${sid}`);
         this._nats.unsubscribe(sid);
     };
 

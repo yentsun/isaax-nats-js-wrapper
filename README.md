@@ -20,7 +20,7 @@ Create an instance of the wrapper:
 ```ecmascript 6
 import NATSWrapper from 'isaax-nats-js-wrapper';
 
-const nats = NATSWrapper({group: 'some-service'});
+const nats = new NATSWrapper({group: 'some-service'});
  nats.on('connect', () => {
      // wrapper is ready at this point
  });
