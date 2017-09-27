@@ -1,3 +1,5 @@
+- [x] UPDATED TS bindings to match js implementation
+
 [2.0.0] - 2017-09-15
 --------------------
 - [x] ADDED ids to request/response
