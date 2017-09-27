@@ -1,4 +1,7 @@
+[2.0.1] - 2017-09-27
+--------------------
 - [x] UPDATED TS bindings to match js implementation
+
 
 [2.0.0] - 2017-09-15
 --------------------
