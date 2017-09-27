@@ -1,4 +1,4 @@
-// Type definitions for isaax-nats-js-wrapper 1.5.0
+import EventEmitter = require('events');
 
 type ListenCallback = (this: void, message: any, respond: (error: Error, message: any) => void) => void;
 
@@ -8,7 +8,7 @@ type ProcessCallback = (this: void, message: any, subject: string) => void;
 
 type RequestCallback = (this: void, error: Error, response: any) => void;
 
-declare class Wrapper {
+declare class Wrapper extends EventEmitter {
 
     constructor(options: Wrapper.Options);
 
