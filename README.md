@@ -4,14 +4,12 @@ NATS Wrapper for JavaScript
 A wrapper over [node-nats](https://github.com/nats-io/node-nats), designed
 to meet the needs of ISAAX project.
 
-[![Standard - JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
-
 
 Installation
 ------------
 
 ```
-npm install xshellinc/isaax-nats-js-wrapper#v1.5.2 --save
+npm install xshellinc/isaax-nats-js-wrapper#v2.0.0 --save
 ```
 
 Usage
@@ -23,6 +21,12 @@ Create an instance of the wrapper:
 import NATSWrapper from 'isaax-nats-js-wrapper';
 
 const nats = NATSWrapper({group: 'some-service'});
+ nats.on('connect', () => {
+     // wrapper is ready at this point
+ });
+ nats.on('error', () => {
+     process.exit(1); // error message will be logged before exiting
+ });
 ```
 
 
@@ -80,3 +84,8 @@ Close NATS connection (if needed):
 ```ecmascript 6
 nats.close();
 ```
+
+Environment variables
+=====================
+
+- `NATS_LOG_LEVEL` - set wrapper's log level. Default is `debug`
