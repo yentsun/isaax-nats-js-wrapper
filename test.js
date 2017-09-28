@@ -8,6 +8,7 @@ let nats;
 wrapper.on('error', () => {
     process.exit(1);
 });
+let firstUnsub;
 
 describe('wrapper', () => {
 
@@ -136,15 +137,29 @@ describe('wrapper', () => {
     });
 
     describe('unsubscribe', () => {
-        it('unsubscribes from NATS subject', () => {
-            const sid = wrapper.subscribe('subscribe', ()=>{});
-            wrapper.unsubscribe(sid);
-            wrapper._nats.on('unsubscribe', (subId, subject) => {
+        it('unsubscribes from NATS subject', (done) => {
+            const sid = wrapper.subscribe('unsubscribe', ()=>{});
+            wrapper._nats.once('unsubscribe', (subId, subject) => {
                 assert.equal(subId, sid);
                 assert.equal(subject, 'unsubscribe');
                 done();
             });
+            wrapper.unsubscribe(sid);
         })
+    });
+
+    describe('subOnce', () => {
+        it('subscribes, gets one message and unsubscribes', (done) => {
+            const sid = wrapper.subOnce('subOnce', (message) => {
+                assert.equal(message.foo, 'once');
+            });
+            wrapper.publish('subOnce', {foo: 'once'});
+            wrapper._nats.once('unsubscribe', (subId, subject) => {
+                assert.equal(subId, sid);
+                assert.equal(subject, 'subOnce');
+                done();
+            });
+        });
     });
 
     describe('close', () => {

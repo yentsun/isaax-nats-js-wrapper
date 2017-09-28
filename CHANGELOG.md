@@ -1,3 +1,8 @@
+[2.1.0]
+-------
+- [x] ADDED one-time subscription fix #14
+
+
 [2.0.2] - 2017-09-28
 --------------------
 - [x] UPDATED TS bindings to match js implementation
@@ -19,7 +24,7 @@
 
 [1.5.4] - 2017-07-03
 --------------------
-- [x] ADDED more info @ error response loggin
+- [x] ADDED more info @ error response logging
 
 
 [1.5.3] - 2017-05-21

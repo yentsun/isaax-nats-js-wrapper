@@ -109,6 +109,17 @@ module.exports = class extends EventEmitter {
         this._nats.unsubscribe(sid);
     };
 
+    // subscribe, receive, unsubscribe
+    subOnce(subject, done) {
+        this._logger.debug(`subscribing once to ${subject}...`);
+        const sid = this._nats.subscribe(subject, (message, replyTo, subject) => {
+            this._logger.debug('got message', subject, message, '- unsubscribing from', sid);
+            this._nats.unsubscribe(sid);
+            done(JSON.parse(message), subject);
+        });
+        return sid;
+    }
+
     // close underlying connection with NATS
     close() {
         this._logger.info('closing connection with NATS:', this._nats.currentServer.url.host);
