@@ -8,7 +8,6 @@ let nats;
 wrapper.on('error', () => {
     process.exit(1);
 });
-let firstUnsub;
 
 describe('wrapper', () => {
 
@@ -49,7 +48,7 @@ describe('wrapper', () => {
         });
 
         it('performs a request and screens password field in logs', (done) => {
-            wrapper.request('request.password', {password: 'should not see this'}, (error, response) => {
+            wrapper.request('request.password', {password: 'should not see this', data: {password: 'should not see this also'}}, (error, response) => {
                 assert.isNull(error);
                 assert.equal(response.password, 'should not see this');
                 done()
@@ -151,7 +150,7 @@ describe('wrapper', () => {
     describe('subOnce', () => {
         it('subscribes, gets one message and unsubscribes', (done) => {
             const sid = wrapper.subOnce('subOnce', (message) => {
-                assert.equal(message.foo, 'once');
+                assert.equal(message.foo, 'onced'); // FIXME no assertion here
             });
             wrapper.publish('subOnce', {foo: 'once'});
             wrapper._nats.once('unsubscribe', (subId, subject) => {

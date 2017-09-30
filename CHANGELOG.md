@@ -1,3 +1,8 @@
+[2.1.1] - 2017-09-30
+--------------------
+- [x] ADDED deeper password screening
+
+
 [2.1.0] - 2017-09-28
 --------------------
 - [x] ADDED one-time subscription fix #14
