@@ -1,3 +1,8 @@
+[2.1.2] - 2017-10-13
+--------------------
+- [x] Remove 'debug' level from stderr stream @ logger
+
+
 [2.1.1] - 2017-09-30
 --------------------
 - [x] ADDED deeper password screening
